@@ -53,7 +53,7 @@ final_new = pd.concat(new_dfs)
 old_dfs = []
 for year in range(1997, 2016):
     print(year)
-    table = pd.read_excel("C:\\Users\\werty\\Desktop\\Portfolio\\Hibernia Decline Curves\\Inputs\\old_data.xlsx", sheet_name=str(year))
+    table = pd.read_excel("Inputs\\old_data.xlsx", sheet_name=str(year))
     df = clean_table(table)
     old_dfs.append(df)
 
@@ -61,4 +61,5 @@ final_old = pd.concat(old_dfs)
 
 final_concat = pd.concat([final_old, final_new])
 final_concat.sort_values(['Well Name', 'Year', 'Month'], inplace=True)
-final_concat.to_csv("C:\\Users\\werty\\Desktop\\Portfolio\\Hibernia Decline Curves\\Inputs\\well_data.csv", index=False)
+final_concat['Cumulative Months'] = final_concat.groupby(['Well Name']).cumcount()
+final_concat.to_csv("Inputs\\well_data.csv", index=False)

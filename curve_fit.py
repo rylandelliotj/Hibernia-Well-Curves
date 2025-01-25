@@ -8,10 +8,8 @@ import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
 
-df = pd.read_csv("C:\\Users\\werty\\Desktop\\Portfolio\\Hibernia Decline Curves\\Inputs\\well_data.csv")
-df.sort_values(['Well Name', 'Year', 'Month'], inplace=True)
-df = df[['Well Name', 'Oil (m3)']]
-df['Cumulative Months'] = df.groupby(['Well Name']).cumcount()
+df = pd.read_csv("Inputs\\well_data.csv")
+df = df[['Well Name','Cumulative Months', 'Oil (m3)']]
 
 
 def arps(t, qi, b, Di):
@@ -34,6 +32,13 @@ def curves(well):
     # Create data of estimated y (avg_prod) at each x (T) given the model parameters
     ans = arps(x, parameters[0], parameters[1], parameters[2])
     
-    return ans
+    result_df = pd.DataFrame({
+        'Cumulative Months': x,
+        'Fitted Values': ans})
+    
+    result_df.reset_index(drop=True, inplace=True)
+    
+    return result_df
 
-results = df.groupby('Well Name').apply(curves).reset_index()
+df['Fitted Values'] = df.groupby('Well Name').apply(curves).reset_index(drop=True)['Fitted Values']
+df.to_csv('Inputs\\arps_curves.csv', index=False)
