@@ -25,7 +25,7 @@ def clean_table(table):
     table.dropna(inplace=True)
     table[numerics] = table[numerics].replace({',':''}, regex=True)
     table[numerics] = table[numerics].astype(float)
-    table.sort_values(['Well Name', 'Year', 'Month'])
+    table['Well Name'] = table['Well Name'].str.replace(' |-','',regex=True)
     
     return table
 
